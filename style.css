@@ -1,0 +1,404 @@
+/* ============================================================
+   Pixel-Art Retro Portfolio Theme
+   Pure CSS. No JavaScript. Copied verbatim into docs/ on build.
+   ============================================================ */
+
+:root {
+  --bg: #0d0d1a;
+  --bg-alt: #16162b;
+  --bg-panel: #1c1c36;
+  --fg: #e8e8e8;
+  --fg-dim: #9a9ab0;
+  --border: #ffffff;
+  --accent: #39ff14;
+  --accent-dim: #1f8a0b;
+  --shadow: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="cyan"]    { --accent: #00e5ff; --accent-dim: #007a8a; }
+html[data-theme="magenta"] { --accent: #ff2079; --accent-dim: #8a0f42; }
+html[data-theme="amber"]   { --accent: #ffb000; --accent-dim: #8a5f00; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 20px;
+  line-height: 1.5;
+  position: relative;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .pixel-font {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  line-height: 1.6;
+}
+
+a { color: var(--accent); }
+
+img { max-width: 100%; display: block; }
+
+/* Scanline / CRT overlay -------------------------------------------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 999;
+}
+
+/* Layout helpers ------------------------------------------------------ */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+section {
+  padding: 4rem 0;
+  border-bottom: 2px dashed var(--bg-alt);
+}
+
+section:last-of-type { border-bottom: none; }
+
+.section-title {
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow: 3px 3px 0 var(--shadow);
+}
+
+/* Pixel corner panel technique ----------------------------------------
+   Stepped-notch clip-path fakes a chunky pixel-art frame with no
+   image assets. Applied to cards, panels, and buttons at varying
+   notch sizes. */
+.pixel-panel {
+  --notch: 10px;
+  position: relative;
+  background: var(--bg-panel);
+  border: 4px solid var(--border);
+  clip-path: polygon(
+    0 var(--notch), var(--notch) var(--notch), var(--notch) 0,
+    calc(100% - var(--notch)) 0, calc(100% - var(--notch)) var(--notch), 100% var(--notch),
+    100% calc(100% - var(--notch)), calc(100% - var(--notch)) calc(100% - var(--notch)), calc(100% - var(--notch)) 100%,
+    var(--notch) 100%, var(--notch) calc(100% - var(--notch)), 0 calc(100% - var(--notch))
+  );
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+/* Nav ------------------------------------------------------------------ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-alt);
+  border-bottom: 4px solid var(--accent);
+}
+
+.nav a {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 0.6rem;
+  text-decoration: none;
+  color: var(--fg);
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+}
+
+.nav a:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+@media (max-width: 600px) {
+  .nav a { font-size: 0.5rem; padding: 0.5rem 0.6rem; }
+}
+
+/* Hero ------------------------------------------------------------------ */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding-top: 3rem;
+}
+
+.hero-avatar {
+  flex-shrink: 0;
+  width: 128px;
+  height: 128px;
+  padding: 6px;
+}
+
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}
+
+.hero-text h1 {
+  font-size: 1.6rem;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+  text-shadow: 3px 3px 0 var(--shadow);
+}
+
+.hero-tagline {
+  font-size: 1.4rem;
+  color: var(--fg-dim);
+}
+
+.hero-tagline::after {
+  content: "_";
+  color: var(--accent);
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50%, 100% { opacity: 0; }
+}
+
+@media (max-width: 700px) {
+  .hero { flex-direction: column; text-align: center; }
+}
+
+/* About / character sheet ------------------------------------------------ */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted var(--bg-alt);
+  font-size: 1.2rem;
+}
+
+.stat-row span:first-child { color: var(--fg-dim); }
+
+/* Skills / XP bars --------------------------------------------------------- */
+.skill-category {
+  margin-bottom: 2rem;
+}
+
+.skill-category h3 {
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.skill {
+  margin-bottom: 1rem;
+}
+
+.skill-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.skill-bar {
+  height: 20px;
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+  padding: 3px;
+}
+
+.skill-fill {
+  height: 100%;
+  background: var(--accent);
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.3) 0,
+    rgba(0, 0, 0, 0.3) 2px,
+    transparent 2px,
+    transparent 10%
+  );
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 2.5rem;
+}
+
+@media (max-width: 700px) {
+  .skills-grid { grid-template-columns: 1fr; }
+}
+
+/* Projects / quest log ------------------------------------------------------ */
+.quest-log {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.quest-card {
+  padding: 1.25rem;
+  transition: transform 0.15s steps(2);
+}
+
+.quest-card:hover {
+  transform: translateY(-4px);
+}
+
+.quest-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.quest-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}
+
+.quest-card h3 {
+  font-size: 0.95rem;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+
+.quest-card p {
+  font-size: 1.15rem;
+  color: var(--fg-dim);
+  margin: 0 0 1rem;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.tech-tag {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  background: var(--bg-alt);
+  border: 2px solid var(--accent-dim);
+  color: var(--accent);
+}
+
+.quest-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Buttons -------------------------------------------------------------------- */
+.btn {
+  --notch: 4px;
+  display: inline-block;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 0.6rem;
+  text-decoration: none;
+  color: var(--accent);
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  padding: 0.6rem 0.9rem;
+  clip-path: polygon(
+    0 var(--notch), var(--notch) var(--notch), var(--notch) 0,
+    calc(100% - var(--notch)) 0, calc(100% - var(--notch)) var(--notch), 100% var(--notch),
+    100% calc(100% - var(--notch)), calc(100% - var(--notch)) calc(100% - var(--notch)), calc(100% - var(--notch)) 100%,
+    var(--notch) 100%, var(--notch) calc(100% - var(--notch)), 0 calc(100% - var(--notch))
+  );
+}
+
+.btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+}
+
+/* Education / level up ---------------------------------------------------------- */
+.level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.level-item {
+  padding: 1.25rem 1.5rem;
+}
+
+.level-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.level-item h3 {
+  font-size: 0.95rem;
+  color: var(--accent);
+  margin: 0;
+}
+
+.badge {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 0.55rem;
+  color: var(--bg);
+  background: var(--accent);
+  padding: 0.3rem 0.5rem;
+}
+
+.level-item p {
+  color: var(--fg-dim);
+  font-size: 1.15rem;
+  margin: 0.25rem 0 0;
+}
+
+/* Contact -------------------------------------------------------------------------- */
+.contact-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.contact-intro {
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 1.2rem;
+}
+
+/* Footer ------------------------------------------------------------------------------ */
+footer {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+}
